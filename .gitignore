@@ -32,3 +32,6 @@ __pycache__
 
 # datasets folder
 datasets
+
+# Jupyter Notebook
+.ipynb_checkpoints
