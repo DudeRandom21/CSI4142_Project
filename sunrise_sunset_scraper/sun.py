@@ -7,7 +7,7 @@ from time import sleep, perf_counter as pf
 import itertools as it
 
 def scrape(month, year):
-    url = 'https://www.timeanddate.com/sun/canada/vancouver?month={}&year={}'.format(month,year)
+    url = 'https://www.timeanddate.com/sun/usa/denver?month={}&year={}'.format(month,year)
     page = requests.get(url).text
 
     soup = BeautifulSoup(page, 'html.parser')
@@ -53,13 +53,13 @@ def format(df, month, year):
 
 def main():
     frames = []
-    for year in range(2015, 2018):
+    for year in range(2012, 2018):
         for month in range(1,13):
             raw = scrape(month, year)
             df = format(raw, month, year)
             frames.append(df)
     final = pd.concat(frames)
-    final.to_csv(r'./output.csv', index=False)
+    final.to_csv(r'./sunrise_sunset_denver.csv', index=False)
 
 if __name__ == "__main__":
     main()
