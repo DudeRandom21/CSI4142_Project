@@ -1,47 +1,51 @@
+CREATE EXTENSION postgis;
 CREATE TABLE Location(
-    locationKey SERIAL PRIMARY KEY,
+    Location_Key SERIAL PRIMARY KEY,
     address VARCHAR(100),
-    city VARCHAR(20),
-    LAT, FLOAT,
-    LON, FLOAT,
-    coordinates GEOGRAPHY,
-    neighbourhood VARCHAR(40)
-    TTL_POPULATION_ALL FLOAT,
-    PCT_HISPANIC FLOAT,
-    PCT_WHITE FLOAT,
-    PCT_BLACK FLOAT,
-    PCT_NATIVEAM FLOAT,
-    PCT_ASIAN FLOAT,
-    PCT_HAWAIIANPI FLOAT,
-    PCT_OTHERRACE FLOAT,
-    MALE FLOAT,
-    FEMALE FLOAT,
-    AGE_10_TO_19 FLOAT,
-    AGE_20_TO_29 FLOAT,
-    AGE_30_TO_39 FLOAT,
-    AGE_40_TO_49 FLOAT,
-    AGE_50_TO_59 FLOAT,
-    AGE_60_OVER FLOAT,
-    MEDIAN_AGE_ALL FLOAT,
-    MEDIAN_AGE_MALE FLOAT,
-    MEDIAN_AGE_FEMALE FLOAT,
-    PER_CAPITA_INCOME FLOAT,
-    PCT_LOW_INCOME FLOAT
+    LAT double precision,
+    LON double precision,
+    NEIGHBORHOOD VARCHAR(60),
+    TTL_POPULATION_ALL INTEGER,
+ PCT_HISPANIC NUMERIC,
+PCT_WHITE  NUMERIC,
+PCT_BLACK NUMERIC,
+PCT_NATIVEAM NUMERIC,
+PCT_ASIAN NUMERIC,
+PCT_HAWAIIANPI NUMERIC,
+PCT_OTHERRACE NUMERIC,
+MALE NUMERIC,
+FEMALE NUMERIC,
+AGE_10_TO_19 NUMERIC,
+AGE_20_TO_29 NUMERIC,
+AGE_30_TO_39 NUMERIC,
+AGE_40_TO_49 NUMERIC,
+AGE_50_TO_59 NUMERIC,
+AGE_60_OVER NUMERIC,
+MEDIAN_AGE_ALL  NUMERIC,
+MEDIAN_AGE_MALE  NUMERIC,
+MEDIAN_AGE_FEMALE  NUMERIC,
+PER_CAPITA_INCOME NUMERIC,
+PCT_LOW_INCOME NUMERIC
+
 );
 CREATE TABLE Weather(
-    weatherKey SERIAL PRIMARY KEY,
-    temperature INTEGER,
-    weather VARCHAR(50), --sun, cloud, rain, etc
-    sunrise TIME,
-    sunset TIME
+    Weather_key SERIAL PRIMARY KEY,
+    Temperature NUMERIC,
+    Weather VARCHAR(40),
+    Sunrise TIME,
+    Sunset TIME
 );
+
+
+
 CREATE TABLE Stock(
     stockKey SERIAL PRIMARY KEY,
-    changeOpenClose FLOAT,
-    changeLastDay FLOAT,
-    changeLastWeek FLOAT,
-    changeLastMonth FLOAT,
-    changeLastYear FLOAT
+    Date DATE,
+    changeOpenClose NUMERIC,
+    changeLastDay NUMERIC,
+    changeLastWeek NUMERIC,
+    changeLastMonth NUMERIC,
+    changeLastYear NUMERIC
 );
 CREATE TABLE SpecialEvent(
     eventKey SERIAL PRIMARY KEY,
@@ -50,44 +54,53 @@ CREATE TABLE SpecialEvent(
     type VARCHAR(75),
     outcome INTEGER check (outcome >0 and outcome <4),
     startDate DATE,
-    endDate DATE
+    endDate DATE,
+    startTime TIME,
+    endTime  TIME
 );
+
+
+
+
 CREATE TABLE Date(
-    dateKey SERIAL PRIMARY KEY,
-    day INTEGER,
-    month INTEGER,
-    year INTEGER check (year>1900),
-    dayOfWeek INTEGER check (dayOfWeek>0 and dayOfWeek<8),
+    Date_key SERIAL PRIMARY KEY,
+    Date DATE,
+    Day_of_week INTEGER,
+    Year INTEGER check (year>1900),
+    Month INTEGER,
+    Day INTEGER ,
+    Week INTEGER,
+    Weekend INTEGER,
     season INTEGER check (season>0 and season<5)
 );
 
 CREATE TABLE Crime(
-    crimeKey SERIAL PRIMARY KEY,
-    category VARCHAR(100),
-    details VARCHAR(100),
-    time TIME,
-    type VARCHAR(100),
-    end_dt DATETIME,
-    start_dt DATETIME
+    Crime_Key SERIAL PRIMARY KEY,
+    Category VARCHAR(100),
+    Details VARCHAR(100),
+    TIME TIME,
+    TYPE VARCHAR(100),
+    end_dt TIMESTAMP,
+           start_dt TIMESTAMP
 );
 
 CREATE TABLE FactTable(
-    DateKey INTEGER,
-    EventKey INTEGER,
-    CrimeKey INTEGER,
-    LocationKey INTEGER,
-    WeatherKey INTEGER,
+    Date_key INTEGER,
+eventKey INTEGER,
+    Crime_key INTEGER,
+    Location_key INTEGER,
+    Weather_key INTEGER,
     StockKey INTEGER,
-    is_fatal INTEGER,
-    is_traffic INTEGER,
-    is_nighttime INTEGER,
+IS_FATAL INTEGER,
+IS_TRAFFIC INTEGER,
+Is_Nighttime INTEGER,
 
-    FOREIGN KEY (DateKey) REFERENCES Date(dateKey),
-    FOREIGN KEY (CrimeKey) REFERENCES Crime(crimeKey),
-    FOREIGN KEY (LocationKey) REFERENCES Location(locationKey),
-    FOREIGN KEY (EventKey) REFERENCES SpecialEvent(eventKey),
-    FOREIGN KEY (WeatherKey) REFERENCES Weather(weatherkey),
-    FOREIGN KEY (StockKey) REFERENCES Stock(stockKey)
+       FOREIGN KEY (Date_key) REFERENCES Date(Date_key),
+FOREIGN KEY (Crime_key) REFERENCES Crime(Crime_key),
+       FOREIGN KEY (Location_key) REFERENCES Location(Location_key),
+        FOREIGN KEY (eventKey ) REFERENCES SpecialEvent(eventKey),
+        FOREIGN KEY (Weather_key ) REFERENCES Weather(Weather_key ),
+        FOREIGN KEY (StockKey) REFERENCES Stock(stockKey)
 
 );
 
