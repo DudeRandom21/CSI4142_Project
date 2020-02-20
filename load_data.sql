@@ -26,3 +26,9 @@ From '/home/jon/Documents/CSI4142/Project/datasets/final/crime.csv' DELIMITER ',
 copy facttable(date_key,eventkey,crime_key,location_key,weather_key,stockkey,is_fatal,is_traffic,is_nighttime)
 From '/home/jon/Documents/CSI4142/Project/datasets/final/fact.csv' DELIMITER ',' CSV HEADER;
 
+CREATE MATERIALIZED VIEW crime_rate AS
+SELECT d.year, d.month, l.neighborhood, CAST(COUNT(DISTINCT f.crime_key) AS float)*100000.0/CAST(l.TTL_POPULATION_ALL AS float) AS crime_rate
+FROM date as d, facttable as f, location as l
+WHERE d.date_key = f.date_key AND l.location_key = f.location_key
+GROUP BY CUBE( d.year, d.month, (l.neighborhood, l.TTL_POPULATION_ALL) )
+ORDER BY l.neighborhood, d.year, d.month
