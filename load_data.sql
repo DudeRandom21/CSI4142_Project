@@ -2,7 +2,7 @@ copy date(date_key,date,day_of_week,year,month,day,week,weekend,season)
 From '/home/jon/Documents/CSI4142/Project/final/date.csv' DELIMITER ',' CSV HEADER;
 
 
-copy location(location_key,address,lat,lon,neighborhood,ttl_population_all,pct_hispanic,pct_white,pct_black,
+copy location(location_key,address,lat,lon,neighborhood,city,ttl_population_all,pct_hispanic,pct_white,pct_black,
          pct_nativeam,pct_asian,pct_hawaiianpi,pct_otherrace,male,female,age_10_to_19,age_20_to_29,
          age_30_to_39,age_40_to_49,age_50_to_59,age_60_over,median_age_all,median_age_male,median_age_female,
          per_capita_income,pct_low_income)

@@ -5,6 +5,7 @@ CREATE TABLE Location(
     LAT double precision,
     LON double precision,
     NEIGHBORHOOD VARCHAR(60),
+    CITY VARCHAR(60),
     TTL_POPULATION_ALL INTEGER,
  PCT_HISPANIC NUMERIC,
 PCT_WHITE  NUMERIC,
