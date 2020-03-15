@@ -79,6 +79,7 @@ INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE d.Year = 2015
 GROUP BY c.TYPE, l.City, f.Is_Nighttime;
 
+--TODO: we need one more here
 
 -- DICE QUERIES
 -- subset of crimes during December, January and February 2015
@@ -130,6 +131,7 @@ INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE d.Year = 2017 
 GROUP BY c.TYPE, l.City, d.season;
 
+-- TODO: we need one more here
 
 -- ICEBERG QUERIES
 -- zeli working on it
@@ -157,6 +159,7 @@ WHERE c.type IS NOT NULL
 GROUP BY (l.neighborhood, c.type)
 ORDER BY l.neighborhood ASC, crimes DESC;
 
+-- TODO: we need one more here
 
 -- WINDOW CLAUSE QUERIES
 
@@ -173,7 +176,7 @@ GROUP BY (d.year, d.month)
 WINDOW w AS (ORDER BY d.year, d.month)
 ORDER BY d.year, d.month;
 
-
+--TODO we need two more here
 
 
 
