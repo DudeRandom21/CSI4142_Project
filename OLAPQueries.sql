@@ -143,6 +143,17 @@ INNER JOIN FactTable as f ON f.Date_key = d.Date_key
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE l.City = 'Vancouver'
 
+-- Ranked number of crimes per type per neighborhood
+SELECT DISTINCT l.neighborhood, c.type, count(*),
+RANK()
+    OVER (PARTITION BY l.neighborhood ORDER BY count(*) DESC)
+FROM facttable as f
+INNER JOIN crime as c ON f.crime_key = c.crime_key
+INNER JOIN location as l ON f.location_key = l.location_key
+WHERE c.type IS NOT NULL
+GROUP BY (l.neighborhood, c.type)
+ORDER BY l.neighborhood;
+
 
 -- WINDOW CLAUSE QUERIES
 
