@@ -134,11 +134,12 @@ GROUP BY c.TYPE, l.City, d.season
 
 
 -- WINDOWING QUERIES      ??????????
--- Average crime per month in Vancouver Neighborhoods
-SELECT c.TYPE, l.NEIGHBORHOOD, d.Month, avg(c.TYPE) OVER (PARTITION BY l.NEIGHBORHOOD)
+-- Crime per month in Vancouver Neighborhoods
+SELECT DISTINCT l.neighborhood, d.year, d.Month,
+count(f.Crime_Key)
+    OVER (PARTITION BY (l.neighborhood, d.year, d.month))
 FROM Date as d 
 INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
-INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE l.City = 'Vancouver'
 
