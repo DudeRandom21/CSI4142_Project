@@ -146,8 +146,18 @@ WHERE l.City = 'Vancouver'
 
 -- WINDOW CLAUSE QUERIES
 
-
-
+-- Number of crimes in Vancouver by month with prev and next
+SELECT d.year, d.month,
+LAG(count(distinct f.crime_key), 1) OVER w as "prev",
+count(distinct f.crime_key) AS crime_count,
+LEAD(count(distinct f.crime_key), 1) OVER w as "next"
+FROM facttable AS f
+INNER JOIN location AS l ON f.location_key = l.location_key
+INNER JOIN date AS d ON f.date_key = d.date_key
+WHERE l.city = 'Vancouver'
+GROUP BY (d.year, d.month)
+WINDOW w AS (ORDER BY d.year, d.month)
+ORDER BY d.year, d.month;
 
 
 
