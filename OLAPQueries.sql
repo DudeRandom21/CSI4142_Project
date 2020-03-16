@@ -28,6 +28,32 @@ INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE d.Year = 2017 AND l.City = 'Denver' AND d.Month = 7 AND d.Day = 4
 GROUP BY c.TYPE;
 
+--crimes in vancouver in 2015
+select c.type, count(*) from crime c 
+inner join facttable f on f.crime_key=c.crime_key
+inner join specialevent s on f.eventkey=s.eventkey
+inner join date d  on d.date_key=f.date_key
+inner join location l on l.location_key=f.location_key
+where d.year=2015 
+group by (c.type);
+
+--crimes in vancouver in April, 2015 
+select c.type, count(*) from crime c 
+inner join facttable f on f.crime_key=c.crime_key
+inner join specialevent s on f.eventkey=s.eventkey
+inner join date d  on d.date_key=f.date_key
+inner join location l on l.location_key=f.location_key
+where d.year=2015 and d.month=4 
+group by (c.type);
+
+--crimes in vancouver in April, 2015 during a hockey event
+select c.type, count(*) from crime c 
+inner join facttable f on f.crime_key=c.crime_key
+inner join specialevent s on f.eventkey=s.eventkey
+inner join date d  on d.date_key=f.date_key
+inner join location l on l.location_key=f.location_key
+where d.year=2015 and d.month=4 and l.city='Vancouver' and s.name='Hockey'
+group by (c.type);
 
 -- ROLL UP QUERIES
 -- On Abbott Street in 2017
