@@ -140,7 +140,7 @@ GROUP BY c.TYPE, l.City, d.season;
 -- TODO: we need one more here
 
 -- ICEBERG QUERIES
-top 10 crime counts grouped by crime type and neighborhood in Vancouver
+-- top 10 crime counts grouped by crime type and neighborhood in Vancouver
 select c.type, l.neighborhood, count(*) as total from 
 location as l inner join
 facttable f on l.location_key=f.location_key
@@ -148,9 +148,9 @@ inner join crime c on f.crime_key=c.crime_key
 where l.city='Vancouver'
 group by (c.type, l.neighborhood)
 order by total DESC
-limit 10
+limit 10;
 
-top 10 crime counts grouped by crime type and neighborhood in Denver
+-- top 10 crime counts grouped by crime type and neighborhood in Denver
 select c.type, l.neighborhood, count(*) as total from 
 location as l inner join
 facttable f on l.location_key=f.location_key
@@ -158,7 +158,7 @@ inner join crime c on f.crime_key=c.crime_key
 where l.city='Denver'
 group by (c.type, l.neighborhood)
 order by total DESC
-limit 10
+limit 10;
 
 
 
