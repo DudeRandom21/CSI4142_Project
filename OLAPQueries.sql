@@ -140,7 +140,7 @@ GROUP BY c.TYPE, l.City, d.season;
 -- TODO: we need one more here
 
 -- ICEBERG QUERIES
-top 10 crime counts grouped by crime type and neighborhood in Vancouver
+-- top 10 crime counts grouped by crime type and neighborhood in Vancouver
 select c.type, l.neighborhood, count(*) as total from 
 location as l inner join
 facttable f on l.location_key=f.location_key
@@ -148,9 +148,9 @@ inner join crime c on f.crime_key=c.crime_key
 where l.city='Vancouver'
 group by (c.type, l.neighborhood)
 order by total DESC
-limit 10
+limit 10;
 
-top 10 crime counts grouped by crime type and neighborhood in Denver
+-- top 10 crime counts grouped by crime type and neighborhood in Denver
 select c.type, l.neighborhood, count(*) as total from 
 location as l inner join
 facttable f on l.location_key=f.location_key
@@ -158,8 +158,9 @@ inner join crime c on f.crime_key=c.crime_key
 where l.city='Denver'
 group by (c.type, l.neighborhood)
 order by total DESC
-limit 10
+limit 10;
 
+-- TODO: Maybe add one more since the two above are essentially the same query
 
 
 -- WINDOWING QUERIES
@@ -189,9 +190,9 @@ ORDER BY l.neighborhood ASC, crimes DESC;
 
 -- Number of crimes in Vancouver by month with prev and next
 SELECT d.year, d.month,
-LAG(count(distinct f.crime_key), 1) OVER w as "prev",
+LAG(count(distinct f.crime_key), 1) OVER w AS "prev",
 count(distinct f.crime_key) AS crime_count,
-LEAD(count(distinct f.crime_key), 1) OVER w as "next"
+LEAD(count(distinct f.crime_key), 1) OVER w AS "next"
 FROM facttable AS f
 INNER JOIN location AS l ON f.location_key = l.location_key
 INNER JOIN date AS d ON f.date_key = d.date_key
@@ -200,11 +201,27 @@ GROUP BY (d.year, d.month)
 WINDOW w AS (ORDER BY d.year, d.month)
 ORDER BY d.year, d.month;
 
---TODO we need two more here
+-- Most and least common crime types by neighborhood by year
+SELECT DISTINCT t.year, t.neighborhood,
+FIRST_VALUE(t.type) OVER down AS "most_common",
+FIRST_VALUE(t.crime_count) OVER down AS "mcount",
+FIRST_VALUE(t.type) OVER up AS "least_common",
+FIRST_VALUE(t.crime_count) OVER up AS "lcount"
+FROM (
+    SELECT d.year, l.neighborhood, c.type,
+    count(distinct f.crime_key) AS crime_count
+    FROM facttable AS f
+    INNER JOIN location AS l ON f.location_key = l.location_key
+    INNER JOIN date AS d ON f.date_key = d.date_key
+    INNER JOIN crime AS c ON f.crime_key = c.crime_key
+    WHERE c.type IS NOT NULL
+    GROUP BY (d.year, l.neighborhood, c.type)
+) AS t
+WINDOW  down AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count DESC),
+        up AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count ASC)
+ORDER BY t.neighborhood, t.year;
 
-
-
-
+--TODO we need one more here
 
 
 
