@@ -160,6 +160,7 @@ group by (c.type, l.neighborhood)
 order by total DESC
 limit 10;
 
+-- TODO: Maybe add one more since the two above are essentially the same query
 
 
 -- WINDOWING QUERIES
@@ -200,11 +201,27 @@ GROUP BY (d.year, d.month)
 WINDOW w AS (ORDER BY d.year, d.month)
 ORDER BY d.year, d.month;
 
---TODO we need two more here
+-- Most and least common crime types by neighborhood by year
+SELECT DISTINCT t.year, t.neighborhood,
+FIRST_VALUE(t.type) OVER down as "most_common",
+FIRST_VALUE(t.crime_count) OVER down as "mcount",
+FIRST_VALUE(t.type) OVER up as "least_common",
+FIRST_VALUE(t.crime_count) OVER up as "lcount"
+FROM (
+    SELECT d.year, l.neighborhood, c.type,
+    count(distinct f.crime_key) as crime_count
+    FROM facttable AS f
+    INNER JOIN location AS l ON f.location_key = l.location_key
+    INNER JOIN date AS d ON f.date_key = d.date_key
+    INNER JOIN crime AS c ON f.crime_key = c.crime_key
+    WHERE c.type IS NOT NULL
+    GROUP BY (d.year, l.neighborhood, c.type)
+) AS t
+WINDOW  down as (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count DESC),
+        up as (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count ASC)
+ORDER BY t.neighborhood, t.year;
 
-
-
-
+--TODO we need one more here
 
 
 
