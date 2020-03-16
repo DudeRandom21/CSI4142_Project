@@ -190,9 +190,9 @@ ORDER BY l.neighborhood ASC, crimes DESC;
 
 -- Number of crimes in Vancouver by month with prev and next
 SELECT d.year, d.month,
-LAG(count(distinct f.crime_key), 1) OVER w as "prev",
+LAG(count(distinct f.crime_key), 1) OVER w AS "prev",
 count(distinct f.crime_key) AS crime_count,
-LEAD(count(distinct f.crime_key), 1) OVER w as "next"
+LEAD(count(distinct f.crime_key), 1) OVER w AS "next"
 FROM facttable AS f
 INNER JOIN location AS l ON f.location_key = l.location_key
 INNER JOIN date AS d ON f.date_key = d.date_key
@@ -203,13 +203,13 @@ ORDER BY d.year, d.month;
 
 -- Most and least common crime types by neighborhood by year
 SELECT DISTINCT t.year, t.neighborhood,
-FIRST_VALUE(t.type) OVER down as "most_common",
-FIRST_VALUE(t.crime_count) OVER down as "mcount",
-FIRST_VALUE(t.type) OVER up as "least_common",
-FIRST_VALUE(t.crime_count) OVER up as "lcount"
+FIRST_VALUE(t.type) OVER down AS "most_common",
+FIRST_VALUE(t.crime_count) OVER down AS "mcount",
+FIRST_VALUE(t.type) OVER up AS "least_common",
+FIRST_VALUE(t.crime_count) OVER up AS "lcount"
 FROM (
     SELECT d.year, l.neighborhood, c.type,
-    count(distinct f.crime_key) as crime_count
+    count(distinct f.crime_key) AS crime_count
     FROM facttable AS f
     INNER JOIN location AS l ON f.location_key = l.location_key
     INNER JOIN date AS d ON f.date_key = d.date_key
@@ -217,8 +217,8 @@ FROM (
     WHERE c.type IS NOT NULL
     GROUP BY (d.year, l.neighborhood, c.type)
 ) AS t
-WINDOW  down as (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count DESC),
-        up as (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count ASC)
+WINDOW  down AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count DESC),
+        up AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count ASC)
 ORDER BY t.neighborhood, t.year;
 
 --TODO we need one more here
