@@ -185,9 +185,17 @@ where l.city='Denver'
 group by (c.type, l.neighborhood)
 order by total DESC
 limit 10;
-
--- TODO: Maybe add one more since the two above are essentially the same query
-
+ 
+-- top 10 crime counts grouped by crime type and during a sports event in Denver
+select c.type,s.name , count(*) as total from 
+location as l inner join
+facttable f on l.location_key=f.location_key
+inner join crime c on f.crime_key=c.crime_key
+inner join specialevent s on f.eventkey=s.eventkey
+where l.city='Denver' and s.type='Sport' 
+group by (c.type, s.name)
+order by total DESC
+limit 10;
 
 -- WINDOWING QUERIES
 -- Crime per month in Vancouver Neighborhoods
