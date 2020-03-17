@@ -179,7 +179,7 @@ FROM Date as d
 INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE d.Year = 2017 AND l.City = 'Denver' AND l.PCT_ASIAN >
+WHERE d.Year = 2017 AND l.City = 'Denver' AND l.PCT_ASIAN > 2
 GROUP BY c.TYPE, d.Month, l.NEIGHBORHOOD;
 
 -- ICEBERG QUERIES
