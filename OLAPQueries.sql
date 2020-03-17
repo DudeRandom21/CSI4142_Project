@@ -114,14 +114,14 @@ WHERE d.year=2016 AND d.month=10 AND l.city='Vancouver'
 GROUP BY (c.category,l.neighborhood,d.month)
 
 -- DICE QUERIES
--- subset of crimes during December, January and February 2015
+-- subset of crimes during December 2015, January and February 2016
 SELECT c.TYPE, l.City, count(*) 
 FROM Date as d 
 INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE (d.Year = 2015 AND (d.Month = 1 OR d.Month = 2))
-OR (d.Year = 2014 AND d.Month = 12)
+WHERE (d.Year = 2016 AND (d.Month = 1 OR d.Month = 2))
+OR (d.Year = 2015 AND d.Month = 12)
 GROUP BY c.TYPE, l.City;
 
 -- Crime per city in 2015 at nighttime
@@ -154,16 +154,33 @@ INNER JOIN SpecialEvent as e ON f.eventKey = e.eventKey
 WHERE e.type = 'Sport'
 GROUP BY c.TYPE, d.Month, d.Year, l.City;
 
--- Crime per city during different seasons in 2017
+-- Crime per city during different seasons in 2015
 SELECT c.TYPE, l.City, d.season, count(*) 
 FROM Date as d 
 INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE d.Year = 2017 
+WHERE d.Year = 2015 
 GROUP BY c.TYPE, l.City, d.season;
 
--- TODO: we need one more here
+-- Crime in Denver in 2017 in neighborhood where the per capita income is lower than 30k
+SELECT c.TYPE, d.Month, count(*) 
+FROM Date as d 
+INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
+INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
+INNER JOIN Location as l ON f.Location_key = l.Location_Key
+WHERE d.Year = 2017 AND l.City = 'Denver' AND l.PER_CAPITA_INCOME < 30000
+GROUP BY c.TYPE, d.Month, d.Year, l.City;
+
+-- Crime in Denver in 2017 in neighborhood where the proportion of asian is high
+-- Note : it is said that the highest paid community in Denver is the Asian community
+SELECT c.TYPE, d.Month, l.NEIGHBORHOOD, count(*) 
+FROM Date as d 
+INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
+INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
+INNER JOIN Location as l ON f.Location_key = l.Location_Key
+WHERE d.Year = 2017 AND l.City = 'Denver' AND l.PCT_ASIAN >
+GROUP BY c.TYPE, d.Month, l.NEIGHBORHOOD;
 
 -- ICEBERG QUERIES
 -- top 10 crime counts grouped by crime type and neighborhood in Vancouver
