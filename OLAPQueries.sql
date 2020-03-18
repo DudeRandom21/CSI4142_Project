@@ -85,6 +85,17 @@ INNER JOIN Location as l ON f.Location_key = l.Location_Key
 WHERE d.Year = 2017 AND l.City = 'Vancouver'
 GROUP BY c.TYPE;
 
+-- Fatality per neighborhood per crime
+SELECT c.type, l.neighborhood,
+GROUPING(c.type, l.neighborhood),
+SUM(f.is_fatal)
+FROM crime as c INNER JOIN
+facttable as f
+ON f.crime_key = c.crime_key
+INNER JOIN location as l
+ON l.location_key = f.location_key
+GROUP BY ROLLUP(c.type, l.neighborhood)
+ORDER BY c.type, l.neighborhood);
 
 -- SLICE QUERIES
 -- Crime per city during March 2016
