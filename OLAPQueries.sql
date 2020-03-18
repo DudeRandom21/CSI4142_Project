@@ -57,11 +57,13 @@ group by (c.type);
 
 -- ROLL UP QUERIES
 -- Number of crimes when temperature is high per neighborhood per crime
-SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood),SUM(w.Temperature > 293)
+
+SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood),SUM(cast(w.Temperature > 293 as int)) as total
 FROM Weather as w 
 INNER JOIN FactTable as f ON f.Weather_key = w.Weather_key 
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
+where l.city='Denver'                                                                     
 GROUP BY ROLLUP(c.type, l.neighborhood)
 ORDER BY c.type, l.neighborhood;
 
@@ -79,6 +81,7 @@ SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood), SUM(f.is_fatal)
 FROM crime as c 
 INNER JOIN facttable as f ON f.crime_key = c.crime_key
 INNER JOIN location as l ON l.location_key = f.location_key
+where l.city='Vancouver'
 GROUP BY ROLLUP(c.type, l.neighborhood)
 ORDER BY c.type, l.neighborhood;
 
