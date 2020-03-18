@@ -56,46 +56,31 @@ where d.year=2015 and d.month=4 and l.city='Vancouver' and s.name='Hockey'
 group by (c.type);
 
 -- ROLL UP QUERIES
--- On Abbott Street in 2017
-SELECT c.TYPE, count(*) 
-FROM Date as d 
-INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
+-- Number of crimes when temperature is high per neighborhood per crime
+SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood),SUM(w.Temperature > 293)
+FROM Weather as w 
+INNER JOIN FactTable as f ON f.Weather_key = w.Weather_key 
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE d.Year = 2017 AND l.City = 'Vancouver'
-AND l.NEIGHBORHOOD = 'central business district' AND l.address LIKE '%ABBOTT ST'
-GROUP BY c.TYPE;
+GROUP BY ROLLUP(c.type, l.neighborhood)
+ORDER BY c.type, l.neighborhood;
 
--- In central business district in 2017
-SELECT c.TYPE, count(*) 
-FROM Date as d 
-INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
+-- Number of crimes that are no traffic crimes per neighborhood per crime
+-- IF ONE ABOVE DOESN'T WORK
+SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood),SUM(!f.IS_TRAFFIC)
+FROM FactTable as f
 INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
 INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE d.Year = 2017 AND l.City = 'Vancouver'
-AND l.NEIGHBORHOOD = 'central business district'
-GROUP BY c.TYPE;
-
--- In Vancouver in 2017
-SELECT c.TYPE, count(*) 
-FROM Date as d 
-INNER JOIN FactTable as f ON f.Date_key = d.Date_key 
-INNER JOIN Crime as c ON f.Crime_key = c.Crime_Key 
-INNER JOIN Location as l ON f.Location_key = l.Location_Key
-WHERE d.Year = 2017 AND l.City = 'Vancouver'
-GROUP BY c.TYPE;
+GROUP BY ROLLUP(c.type, l.neighborhood)
+ORDER BY c.type, l.neighborhood;
 
 -- Fatality per neighborhood per crime
-SELECT c.type, l.neighborhood,
-GROUPING(c.type, l.neighborhood),
-SUM(f.is_fatal)
-FROM crime as c INNER JOIN
-facttable as f
-ON f.crime_key = c.crime_key
-INNER JOIN location as l
-ON l.location_key = f.location_key
+SELECT c.type, l.neighborhood, GROUPING(c.type, l.neighborhood), SUM(f.is_fatal)
+FROM crime as c 
+INNER JOIN facttable as f ON f.crime_key = c.crime_key
+INNER JOIN location as l ON l.location_key = f.location_key
 GROUP BY ROLLUP(c.type, l.neighborhood)
-ORDER BY c.type, l.neighborhood);
+ORDER BY c.type, l.neighborhood;
 
 -- SLICE QUERIES
 -- Crime per city during March 2016
@@ -246,10 +231,8 @@ WHERE c.type IS NOT NULL
 GROUP BY (l.neighborhood, c.type)
 ORDER BY l.neighborhood ASC, crimes DESC;
 
--- TODO: we need one more here
-
+                        
 -- WINDOW CLAUSE QUERIES
-
 -- Number of crimes in Vancouver by month with prev and next
 SELECT d.year, d.month,
 LAG(count(distinct f.crime_key), 1) OVER w AS "prev",
@@ -282,9 +265,6 @@ FROM (
 WINDOW  down AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count DESC),
         up AS (PARTITION BY t.year, t.neighborhood ORDER BY t.crime_count ASC)
 ORDER BY t.neighborhood, t.year;
-
---TODO we need one more here
-
 
 
 
